@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Send, Bot, User, Clock, DollarSign, MapPin, Calendar } from 'lucide-react';
+import { Send, Bot, User, Clock, DollarSign, MapPin, Calendar, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface Message {
@@ -244,57 +244,70 @@ export const ChatBot = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border border-purple-100">
       {/* Chat Header */}
-      <div className="bg-primary text-primary-foreground p-4">
-        <div className="flex items-center space-x-3">
-          <div className="bg-primary/20 p-2 rounded-full">
+      <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6">
+        <div className="flex items-center space-x-4">
+          <div className="bg-white/20 p-3 rounded-full backdrop-blur-sm">
             <Bot className="h-6 w-6" />
           </div>
-          <div>
-            <h3 className="font-semibold">UNKLAB Info Bot</h3>
-            <p className="text-primary-foreground/80 text-sm">Siap membantu 24/7</p>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-lg">UNKLAB Info Bot</h3>
+              <Sparkles className="h-4 w-4 text-purple-200" />
+            </div>
+            <p className="text-purple-100 text-sm flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              Siap membantu 24/7
+            </p>
           </div>
         </div>
       </div>
 
       {/* Messages Area */}
-      <div className="h-96 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      <div className="h-96 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-purple-50/30 to-white">
         {messages.map((message) => (
-          <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+          <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`}>
             <div className={`max-w-xs lg:max-w-md xl:max-w-lg ${
               message.sender === 'user' 
-                ? 'bg-primary text-primary-foreground rounded-l-lg rounded-tr-lg' 
-                : 'bg-white border rounded-r-lg rounded-tl-lg shadow-sm'
-            } p-3`}>
-              <div className="flex items-start space-x-2">
+                ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-l-2xl rounded-tr-2xl shadow-lg' 
+                : 'bg-white border border-purple-100 rounded-r-2xl rounded-tl-2xl shadow-lg'
+            } p-4`}>
+              <div className="flex items-start space-x-3">
                 {message.sender === 'bot' && (
-                  <Bot className="h-4 w-4 mt-1 text-primary flex-shrink-0" />
+                  <div className="bg-purple-100 p-2 rounded-full">
+                    <Bot className="h-4 w-4 text-purple-600 flex-shrink-0" />
+                  </div>
                 )}
                 <div className="flex-1">
-                  <div className={`text-sm ${message.sender === 'user' ? 'text-primary-foreground' : 'text-gray-800'}`}>
+                  <div className={`text-sm ${message.sender === 'user' ? 'text-white' : 'text-gray-800'}`}>
                     {formatMessage(message.text)}
                   </div>
-                  <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-primary-foreground/80' : 'text-gray-500'}`}>
-                    <Clock className="h-3 w-3 inline mr-1" />
+                  <div className={`text-xs mt-2 flex items-center gap-1 ${message.sender === 'user' ? 'text-purple-100' : 'text-gray-500'}`}>
+                    <Clock className="h-3 w-3" />
                     {message.timestamp.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
                 {message.sender === 'user' && (
-                  <User className="h-4 w-4 mt-1 text-primary-foreground/80 flex-shrink-0" />
+                  <div className="bg-white/20 p-2 rounded-full">
+                    <User className="h-4 w-4 text-white flex-shrink-0" />
+                  </div>
                 )}
               </div>
               
               {/* Suggestions */}
               {message.suggestions && message.suggestions.length > 0 && (
-                <div className="mt-3 space-y-2">
-                  <div className="text-xs text-gray-500 font-medium">Pertanyaan yang mungkin Anda maksud:</div>
+                <div className="mt-4 space-y-3">
+                  <div className="text-xs text-gray-500 font-medium flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" />
+                    Pertanyaan yang mungkin Anda maksud:
+                  </div>
                   <div className="flex flex-wrap gap-2">
                     {message.suggestions.map((suggestion, index) => (
                       <Badge
                         key={index}
                         variant="outline"
-                        className="cursor-pointer hover:bg-primary/10 text-xs"
+                        className="cursor-pointer hover:bg-purple-50 hover:border-purple-300 text-xs transition-all duration-200 hover:scale-105"
                         onClick={() => handleSuggestionClick(suggestion)}
                       >
                         {suggestion}
@@ -306,14 +319,14 @@ export const ChatBot = () => {
 
               {/* Cost Data Display */}
               {message.data?.type === 'cost' && (
-                <div className="mt-3 p-3 bg-primary/10 rounded-lg">
-                  <div className="flex items-center space-x-2 text-primary">
+                <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                  <div className="flex items-center space-x-2 text-purple-700 mb-2">
                     <DollarSign className="h-4 w-4" />
-                    <span className="font-medium">Detail Biaya</span>
+                    <span className="font-semibold">Detail Biaya</span>
                   </div>
-                  <div className="mt-2 text-sm text-primary/80">
+                  <div className="text-sm text-purple-600 space-y-1">
                     <div>Program: {message.data.program.name}</div>
-                    <div>Total: Rp {message.data.program.cost.toLocaleString('id-ID')}</div>
+                    <div className="font-semibold">Total: Rp {message.data.program.cost.toLocaleString('id-ID')}</div>
                   </div>
                 </div>
               )}
@@ -322,14 +335,16 @@ export const ChatBot = () => {
         ))}
         
         {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-white border rounded-r-lg rounded-tl-lg shadow-sm p-3 max-w-xs">
-              <div className="flex items-center space-x-2">
-                <Bot className="h-4 w-4 text-primary" />
+          <div className="flex justify-start animate-fade-in">
+            <div className="bg-white border border-purple-100 rounded-r-2xl rounded-tl-2xl shadow-lg p-4 max-w-xs">
+              <div className="flex items-center space-x-3">
+                <div className="bg-purple-100 p-2 rounded-full">
+                  <Bot className="h-4 w-4 text-purple-600" />
+                </div>
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                 </div>
               </div>
             </div>
@@ -339,20 +354,24 @@ export const ChatBot = () => {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 border-t bg-white">
-        <div className="flex space-x-2">
+      <div className="p-6 border-t border-purple-100 bg-white">
+        <div className="flex space-x-3">
           <Input
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Tanyakan tentang UNKLAB..."
-            className="flex-1"
+            className="flex-1 border-purple-200 focus:border-purple-500 focus:ring-purple-500 rounded-xl"
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
-          <Button onClick={handleSendMessage} className="bg-primary hover:bg-primary/90">
+          <Button 
+            onClick={handleSendMessage} 
+            className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 rounded-xl transition-all duration-200 hover:scale-105 shadow-lg"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <div className="mt-2 text-xs text-gray-500 text-center">
+        <div className="mt-3 text-xs text-gray-500 text-center flex items-center justify-center gap-1">
+          <Sparkles className="h-3 w-3 text-purple-400" />
           Ketik pertanyaan Anda atau klik salah satu saran di atas
         </div>
       </div>
