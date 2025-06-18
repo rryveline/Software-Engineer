@@ -1,79 +1,73 @@
-# 🤖 AI Chatbot - Information Center UNKLAB
+# Welcome to your Lovable project
 
-Proyek ini merupakan pengembangan **AI Chatbot berbasis website** untuk mempermudah akses informasi di Universitas Klabat (UNKLAB). Chatbot ini dirancang untuk menjawab pertanyaan-pertanyaan umum seputar kampus secara otomatis, cepat, dan akurat.
+## Project info
 
-## 📌 Latar Belakang
+**URL**: https://lovable.dev/projects/1064148c-6e2b-4684-8030-63070805a50a
 
-UNKLAB menerima banyak pertanyaan berulang dari calon mahasiswa, mahasiswa aktif, dan orang tua setiap harinya. Proses penjawaban secara manual memakan waktu dan tenaga dari staf universitas. Maka dari itu, dikembangkanlah solusi chatbot pintar yang dapat memberikan jawaban real-time dengan teknologi **Natural Language Processing (NLP)**.
+## How can I edit this code?
 
-## 🎯 Tujuan
+There are several ways of editing your application.
 
-- Menjawab pertanyaan umum seputar UNKLAB secara otomatis dan akurat.
-- Mengurangi beban staf dalam menjawab pertanyaan yang berulang.
-- Meningkatkan efisiensi penyampaian informasi kepada pengguna.
-- Mempermudah pengelolaan konten melalui dashboard admin.
+**Use Lovable**
 
-## 👥 Target Pengguna
+Simply visit the [Lovable Project](https://lovable.dev/projects/1064148c-6e2b-4684-8030-63070805a50a) and start prompting.
 
-- **Calon Mahasiswa & Orang Tua:** Info jurusan, biaya, syarat masuk, pendaftaran.
-- **Mahasiswa Aktif:** Info jadwal akademik, pengumuman kampus.
-- **Admin / Staf UNKLAB:** Pengelolaan konten chatbot.
+Changes made via Lovable will be committed automatically to this repo.
 
-## 🚀 Fitur Utama
+**Use your preferred IDE**
 
-- ✅ **AI Chatbot** (NLP + knowledge base)
-- ✅ **Manual Data Management** (CRUD untuk admin)
-- ✅ **Crawling & Sinkronisasi Otomatis** dari situs resmi
-- ✅ **Search Engine Admin** untuk pencarian konten cepat
+If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-## ⚙️ Kebutuhan Sistem
+The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-### Fungsional
-- Memahami pertanyaan dengan NLP
-- CRUD data penting (biaya kuliah, jadwal akademik, dll)
-- Sinkronisasi berkala dari situs resmi UNKLAB
-- Fitur pencarian konten
+Follow these steps:
 
-### Non-Fungsional
-- UI responsif (mobile & desktop)
-- Login aman untuk admin
-- Update konten real-time
-- Dukungan multi-bahasa (opsional: ID & EN)
+```sh
+# Step 1: Clone the repository using the project's Git URL.
+git clone <YOUR_GIT_URL>
 
-## 🔐 Batasan Sistem
+# Step 2: Navigate to the project directory.
+cd <YOUR_PROJECT_NAME>
 
-- Chatbot hanya menjawab dari data yang tersedia
-- Crawler terbatas pada struktur situs resmi UNKLAB
-- Dashboard admin hanya untuk user yang terverifikasi
-- Integrasi sistem akademik belum tersedia di fase awal
+# Step 3: Install the necessary dependencies.
+npm i
 
-## 🧪 Kriteria Keberhasilan
+# Step 4: Start the development server with auto-reloading and an instant preview.
+npm run dev
+```
 
-- Akurasi jawaban AI > 80%
-- Operasi admin bebas error
-- Sinkronisasi berjalan otomatis & sukses
-- Respon chatbot < 3 detik, uptime ≥ 90%
+**Edit a file directly in GitHub**
 
-## 🗓️ Timeline Pengembangan
+- Navigate to the desired file(s).
+- Click the "Edit" button (pencil icon) at the top right of the file view.
+- Make your changes and commit the changes.
 
-| Fase                     | Durasi        | Output                                 |
-|--------------------------|---------------|----------------------------------------|
-| Planning & Requirements  | 1 minggu      | PRD, User Stories, Task List           |
-| UI/UX Design             | 1 minggu      | Mockup Chatbot & Dashboard             |
-| Core System Development  | 2–3 minggu    | Chatbot, CRUD, Login, Search           |
-| Crawling Integration     | 1 minggu      | Crawler & Sinkronisasi Otomatis        |
-| Testing & Debugging      | 1 minggu      | Validasi dan Uji Sistem                |
-| Deployment & Dokumentasi | 1 minggu      | Website Live + README, Manual, dll.    |
+**Use GitHub Codespaces**
 
-## 🌐 Referensi
+- Navigate to the main page of your repository.
+- Click on the "Code" button (green button) near the top right.
+- Select the "Codespaces" tab.
+- Click on "New codespace" to launch a new Codespace environment.
+- Edit files directly within the Codespace and commit and push your changes once you're done.
 
-- [Website Resmi UNKLAB](https://www.unklab.ac.id)
-- Template UI/UX: Figma
+## What technologies are used for this project?
 
----
+This project is built with:
 
-📣 Dibuat oleh:
-- Tambuku, Jonathan  
-- Robot, Ryveline  
-- Malinso, Julio Nofriandi
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
 
+## How can I deploy this project?
+
+Simply open [Lovable](https://lovable.dev/projects/1064148c-6e2b-4684-8030-63070805a50a) and click on Share -> Publish.
+
+## Can I connect a custom domain to my Lovable project?
+
+Yes, you can!
+
+To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+
+Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
