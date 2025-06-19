@@ -60,11 +60,11 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
           <CardHeader className="space-y-4 text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full flex items-center justify-center">
+            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
               {isAdmin ? (
                 <Settings className="w-8 h-8 text-white" />
               ) : (
@@ -95,7 +95,7 @@ const Login = () => {
                   placeholder={isAdmin ? "admin@unklab.ac.id" : "user@gmail.com"}
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="border-gray-300 focus:border-blue-500"
+                  className="border-gray-300 focus:border-purple-500"
                 />
               </div>
               
@@ -109,7 +109,7 @@ const Login = () => {
                     placeholder="Masukkan password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="border-gray-300 focus:border-blue-500 pr-10"
+                    className="border-gray-300 focus:border-purple-500 pr-10"
                   />
                   <button
                     type="button"
@@ -127,7 +127,7 @@ const Login = () => {
 
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
+                className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
                 disabled={isLoading}
               >
                 {isLoading ? 'Memproses...' : 'Login'}
@@ -135,12 +135,12 @@ const Login = () => {
             </form>
 
             {/* Demo Credentials */}
-            <div className="bg-blue-50 rounded-lg p-4 space-y-2">
-              <div className="flex items-center space-x-2 text-blue-700">
+            <div className="bg-purple-50 rounded-lg p-4 space-y-2">
+              <div className="flex items-center space-x-2 text-purple-700">
                 <AlertCircle className="w-4 h-4" />
                 <span className="text-sm font-medium">Demo Credentials</span>
               </div>
-              <div className="text-sm text-blue-600 space-y-1">
+              <div className="text-sm text-purple-600 space-y-1">
                 {isAdmin ? (
                   <>
                     <p>Email: admin@unklab.ac.id</p>
@@ -161,7 +161,7 @@ const Login = () => {
               </p>
               <Link
                 to={isAdmin ? '/login/user' : '/login/admin'}
-                className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                className="text-purple-600 hover:text-purple-700 font-medium text-sm"
               >
                 {isAdmin ? 'Login sebagai User' : 'Login sebagai Admin'}
               </Link>

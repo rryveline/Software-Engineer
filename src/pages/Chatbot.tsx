@@ -1,10 +1,10 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, Bot, User, MessageCircle, Sparkles } from 'lucide-react';
+import { Send, Bot, User, MessageCircle, Sparkles, LogIn } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Link } from 'react-router-dom';
 
 interface Message {
   id: string;
@@ -45,7 +45,6 @@ const Chatbot = () => {
   const generateBotResponse = (userMessage: string): { text: string; suggestions?: string[] } => {
     const message = userMessage.toLowerCase();
     
-    // Simple pattern matching for demo - replace with actual NLP/AI
     if (message.includes('program studi') || message.includes('jurusan') || message.includes('prodi')) {
       return {
         text: 'UNKLAB memiliki berbagai program studi unggulan:\n\n🎓 **Fakultas Teknik:**\n- Teknik Informatika (S1)\n- Sistem Informasi (S1)\n- Teknik Sipil (S1)\n\n🏥 **Fakultas Kesehatan:**\n- Keperawatan (S1)\n- Kesehatan Masyarakat (S1)\n\n💼 **Fakultas Ekonomi:**\n- Manajemen (S1)\n- Akuntansi (S1)\n\nApakah Anda ingin tahu lebih detail tentang salah satu program studi?',
@@ -81,7 +80,6 @@ const Chatbot = () => {
       };
     }
     
-    // Default response
     return {
       text: 'Maaf, saya belum memahami pertanyaan Anda. Saya bisa membantu dengan informasi tentang:\n\n• Program studi dan jurusan\n• Biaya kuliah dan beasiswa\n• Jadwal akademik\n• Fasilitas kampus\n• Lokasi dan kontak\n\nSilakan ajukan pertanyaan yang lebih spesifik! 😊',
       suggestions: ['Program studi apa saja?', 'Berapa biaya kuliah?', 'Dimana lokasi kampus?']
@@ -89,6 +87,10 @@ const Chatbot = () => {
   };
 
   const handleSendMessage = async () => {
+    if (!user) {
+      return; // Akan ditangani oleh UI di bawah
+    }
+    
     if (!inputMessage.trim()) return;
 
     const userMessage: Message = {
@@ -102,7 +104,6 @@ const Chatbot = () => {
     setInputMessage('');
     setIsTyping(true);
 
-    // Simulate typing delay
     setTimeout(() => {
       const botResponse = generateBotResponse(inputMessage);
       const botMessage: Message = {
@@ -119,6 +120,7 @@ const Chatbot = () => {
   };
 
   const handleSuggestionClick = (suggestion: string) => {
+    if (!user) return;
     setInputMessage(suggestion);
   };
 
@@ -130,19 +132,19 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-teal-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
       <div className="max-w-4xl mx-auto p-4">
         {/* Header */}
         <div className="text-center py-8">
           <div className="inline-flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-lg border border-gray-200">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
               <Bot className="w-6 h-6 text-white" />
             </div>
             <div>
               <h1 className="text-xl font-bold text-gray-800">UNKLAB ChatBot</h1>
               <p className="text-sm text-gray-600">AI Assistant untuk informasi kampus</p>
             </div>
-            <Sparkles className="w-5 h-5 text-yellow-500" />
+            <Sparkles className="w-5 h-5 text-purple-500" />
           </div>
         </div>
 
@@ -158,7 +160,7 @@ const Chatbot = () => {
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       message.sender === 'user' 
                         ? 'bg-gradient-to-br from-gray-600 to-gray-700' 
-                        : 'bg-gradient-to-br from-blue-600 to-teal-600'
+                        : 'bg-gradient-to-br from-purple-600 to-violet-600'
                     }`}>
                       {message.sender === 'user' ? (
                         <User className="w-4 h-4 text-white" />
@@ -170,11 +172,11 @@ const Chatbot = () => {
                     {/* Message Content */}
                     <div className={`rounded-2xl px-4 py-3 ${
                       message.sender === 'user'
-                        ? 'bg-gradient-to-r from-blue-600 to-teal-600 text-white'
+                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
                         : 'bg-gray-100 text-gray-800'
                     }`}>
                       <p className="whitespace-pre-line text-sm leading-relaxed">{message.text}</p>
-                      {message.suggestions && (
+                      {message.suggestions && user && (
                         <div className="mt-3 flex flex-wrap gap-2">
                           {message.suggestions.map((suggestion, index) => (
                             <button
@@ -196,7 +198,7 @@ const Chatbot = () => {
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-600 rounded-full flex items-center justify-center">
+                    <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
                       <Bot className="w-4 h-4 text-white" />
                     </div>
                     <div className="bg-gray-100 rounded-2xl px-4 py-3">
@@ -215,23 +217,35 @@ const Chatbot = () => {
 
             {/* Input Area */}
             <div className="border-t border-gray-200 p-4 bg-gray-50">
-              <div className="flex items-center space-x-3">
-                <Input
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Ketik pertanyaan Anda disini..."
-                  className="flex-1 border-gray-300 focus:border-blue-500 bg-white"
-                  disabled={isTyping}
-                />
-                <Button
-                  onClick={handleSendMessage}
-                  disabled={!inputMessage.trim() || isTyping}
-                  className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
-                >
-                  <Send className="w-4 h-4" />
-                </Button>
-              </div>
+              {!user ? (
+                <div className="text-center py-4">
+                  <p className="text-gray-600 mb-4">Silakan login untuk menggunakan chatbot</p>
+                  <Link to="/login/user">
+                    <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700">
+                      <LogIn className="w-4 h-4 mr-2" />
+                      Login untuk Chat
+                    </Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <Input
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Ketik pertanyaan Anda disini..."
+                    className="flex-1 border-gray-300 focus:border-purple-500 bg-white"
+                    disabled={isTyping}
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={!inputMessage.trim() || isTyping}
+                    className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
