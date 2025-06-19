@@ -20,24 +20,26 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-teal-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">UK</span>
-            </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+            <img 
+              src="/lovable-uploads/9fe6cbcd-f7f6-432d-8983-bc8ec7e65bfc.png" 
+              alt="UNKLAB Logo" 
+              className="w-10 h-10 object-contain"
+            />
+            <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-violet-600 bg-clip-text text-transparent">
               UNKLAB Info
             </span>
           </Link>
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/" className="text-gray-700 hover:text-purple-600 transition-colors">
               Beranda
             </Link>
-            <Link to="/chatbot" className="text-gray-700 hover:text-blue-600 transition-colors">
+            <Link to="/chatbot" className="text-gray-700 hover:text-purple-600 transition-colors">
               Chatbot
             </Link>
             {user?.role === 'admin' && (
-              <Link to="/admin" className="text-gray-700 hover:text-blue-600 transition-colors flex items-center space-x-1">
+              <Link to="/admin" className="text-gray-700 hover:text-purple-600 transition-colors flex items-center space-x-1">
                 <Settings className="w-4 h-4" />
                 <span>Admin</span>
               </Link>
@@ -51,7 +53,7 @@ const Navbar = () => {
                 <div className="flex items-center space-x-2">
                   <User className="w-4 h-4 text-gray-500" />
                   <span className="text-sm text-gray-700 hidden sm:block">{user.name}</span>
-                  <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                  <span className="text-xs text-purple-600 bg-purple-50 px-2 py-1 rounded-full">
                     {user.role}
                   </span>
                 </div>
@@ -66,14 +68,8 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link to="/login/user">
-                  <Button variant="ghost" size="sm" className="text-blue-600">
-                    <User className="w-4 h-4 mr-1" />
-                    Login User
-                  </Button>
-                </Link>
                 <Link to="/login/admin">
-                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700">
+                  <Button size="sm" className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700">
                     <Settings className="w-4 h-4 mr-1" />
                     Admin
                   </Button>
