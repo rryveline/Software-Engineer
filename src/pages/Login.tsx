@@ -92,7 +92,7 @@ const Login = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={isAdmin ? "admin@unklab.ac.id" : "user@gmail.com"}
+                  placeholder={isAdmin ? "marketing@unklab.ac.id" : "user@gmail.com"}
                   value={formData.email}
                   onChange={handleInputChange}
                   className="border-gray-300 focus:border-purple-500"
@@ -143,8 +143,8 @@ const Login = () => {
               <div className="text-sm text-purple-600 space-y-1">
                 {isAdmin ? (
                   <>
-                    <p>Email: admin@unklab.ac.id</p>
-                    <p>Password: admin123</p>
+                    <p>Email: marketing@unklab.ac.id</p>
+                    <p>Password: universitasklabat10987654321</p>
                   </>
                 ) : (
                   <>

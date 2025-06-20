@@ -8,8 +8,8 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50 flex flex-col">
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-4 flex-1">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative overflow-hidden py-12 px-4 flex-1 flex items-center">
+        <div className="max-w-7xl mx-auto w-full">
           <div className="text-center space-y-8">
             <div className="space-y-4">
               <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-600 via-violet-600 to-purple-800 bg-clip-text text-transparent leading-tight">
@@ -31,12 +31,6 @@ const Home = () => {
                   Tanya Chatbot
                 </Button>
               </Link>
-              <Link to="/login/user">
-                <Button size="lg" variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50 px-8 py-3 text-lg">
-                  <Users className="w-5 h-5 mr-2" />
-                  Login User
-                </Button>
-              </Link>
             </div>
           </div>
         </div>
@@ -50,9 +44,9 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-r from-purple-600 to-violet-600 text-white py-8 px-4">
+      <footer className="bg-gradient-to-r from-purple-600 to-violet-600 text-white py-6 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col items-center space-y-6">
+          <div className="flex flex-col items-center space-y-4">
             <div className="text-center">
               <h3 className="text-lg font-semibold mb-2">Ikuti Kami</h3>
               <p className="text-purple-100">Dapatkan informasi terbaru dari UNKLAB</p>

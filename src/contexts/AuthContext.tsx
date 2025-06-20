@@ -41,9 +41,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const mockUsers: User[] = [
         {
           id: 'admin-1',
-          email: 'admin@unklab.ac.id',
-          password: 'admin123',
-          name: 'Administrator',
+          email: 'marketing@unklab.ac.id',
+          password: 'universitasklabat10987654321',
+          name: 'Marketing UNKLAB',
           role: 'admin',
           createdAt: new Date().toISOString()
         },
