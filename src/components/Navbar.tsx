@@ -2,15 +2,15 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { User, LogOut, MessageCircle, Settings } from 'lucide-react';
+import { User, LogOut, MessageCircle, Settings, UserPlus } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -68,8 +68,20 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex items-center space-x-2">
-                <Link to="/login/admin">
+                <Link to="/register">
+                  <Button variant="outline" size="sm" className="border-purple-200 text-purple-600 hover:bg-purple-50">
+                    <UserPlus className="w-4 h-4 mr-1" />
+                    Daftar
+                  </Button>
+                </Link>
+                <Link to="/login/user">
                   <Button size="sm" className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700">
+                    <User className="w-4 h-4 mr-1" />
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/login/admin">
+                  <Button variant="outline" size="sm" className="border-gray-200">
                     <Settings className="w-4 h-4 mr-1" />
                     Admin
                   </Button>

@@ -92,7 +92,7 @@ const Login = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={isAdmin ? "marketing@unklab.ac.id" : "user@gmail.com"}
+                  placeholder={isAdmin ? "marketing@unklab.ac.id" : "Masukkan email Anda"}
                   value={formData.email}
                   onChange={handleInputChange}
                   className="border-gray-300 focus:border-purple-500"
@@ -134,26 +134,19 @@ const Login = () => {
               </Button>
             </form>
 
-            {/* Demo Credentials */}
-            <div className="bg-purple-50 rounded-lg p-4 space-y-2">
-              <div className="flex items-center space-x-2 text-purple-700">
-                <AlertCircle className="w-4 h-4" />
-                <span className="text-sm font-medium">Demo Credentials</span>
+            {/* Demo Credentials for Admin */}
+            {isAdmin && (
+              <div className="bg-purple-50 rounded-lg p-4 space-y-2">
+                <div className="flex items-center space-x-2 text-purple-700">
+                  <AlertCircle className="w-4 h-4" />
+                  <span className="text-sm font-medium">Demo Credentials</span>
+                </div>
+                <div className="text-sm text-purple-600 space-y-1">
+                  <p>Email: marketing@unklab.ac.id</p>
+                  <p>Password: unklab</p>
+                </div>
               </div>
-              <div className="text-sm text-purple-600 space-y-1">
-                {isAdmin ? (
-                  <>
-                    <p>Email: marketing@unklab.ac.id</p>
-                    <p>Password: universitasklabat10987654321</p>
-                  </>
-                ) : (
-                  <>
-                    <p>Email: user@gmail.com</p>
-                    <p>Password: user123</p>
-                  </>
-                )}
-              </div>
-            </div>
+            )}
 
             <div className="text-center space-y-2">
               <p className="text-sm text-gray-600">
@@ -166,6 +159,21 @@ const Login = () => {
                 {isAdmin ? 'Login sebagai User' : 'Login sebagai Admin'}
               </Link>
             </div>
+
+            {/* Register link for users */}
+            {!isAdmin && (
+              <div className="text-center space-y-2">
+                <p className="text-sm text-gray-600">
+                  Belum punya akun?
+                </p>
+                <Link
+                  to="/register"
+                  className="text-purple-600 hover:text-purple-700 font-medium text-sm"
+                >
+                  Daftar di sini
+                </Link>
+              </div>
+            )}
 
             <div className="text-center">
               <Link
