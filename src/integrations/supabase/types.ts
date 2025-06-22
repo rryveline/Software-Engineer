@@ -33,6 +33,48 @@ export type Database = {
         }
         Relationships: []
       }
+      crawled_data: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          source_type: string
+          status: string
+          title: string
+          updated_at: string
+          url: string | null
+          word_count: number | null
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          source_type: string
+          status?: string
+          title: string
+          updated_at?: string
+          url?: string | null
+          word_count?: number | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          source_type?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          url?: string | null
+          word_count?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
