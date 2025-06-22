@@ -52,6 +52,7 @@ const WebCrawling = () => {
     url?: string
   ) => {
     try {
+      // For admin users, created_by can be null since they don't use Supabase Auth
       const { error } = await supabase
         .from('crawled_data')
         .insert({
@@ -60,7 +61,7 @@ const WebCrawling = () => {
           category,
           source_type: sourceType,
           url: url || null,
-          created_by: user?.id || null
+          created_by: user?.id || null // Allow null for admin users
         });
 
       if (error) {
