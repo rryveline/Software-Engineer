@@ -54,22 +54,26 @@ const WebCrawling = () => {
     try {
       console.log('Saving crawled data with user:', user);
       
-      // For admin users who aren't authenticated through Supabase Auth, set created_by to null
-      // Only set created_by if the user has a valid Supabase Auth ID
+      // Set created_by to null for admin users without Supabase Auth ID
       const created_by = user?.id && user.email ? user.id : null;
       
       console.log('Using created_by:', created_by);
 
+      const insertData = {
+        title,
+        content,
+        category,
+        source_type: sourceType,
+        status: 'success', // Always set status to success for successful crawls
+        url: url || null,
+        created_by // This will be null for admin users without Supabase Auth
+      };
+
+      console.log('Insert data:', insertData);
+
       const { error } = await supabase
         .from('crawled_data')
-        .insert({
-          title,
-          content,
-          category,
-          source_type: sourceType,
-          url: url || null,
-          created_by // This will be null for admin users without Supabase Auth
-        });
+        .insert(insertData);
 
       if (error) {
         console.error('Error saving crawled data:', error);
@@ -99,6 +103,7 @@ const WebCrawling = () => {
         variant: "default"
       });
     } catch (error) {
+      console.error('Error in handleCrawlComplete:', error);
       toast({
         title: "Error",
         description: "Crawling selesai tetapi gagal menyimpan data",
@@ -127,8 +132,9 @@ const WebCrawling = () => {
 
   const handleFileUpload = async (file: File, content: string) => {
     try {
+      const fileName = file.name.replace(/\.[^/.]+$/, ""); // Remove file extension
       await saveCrawledData(
-        file.name.replace(/\.[^/.]+$/, ""), // Remove file extension
+        fileName,
         content,
         'dokumen',
         'file_upload'

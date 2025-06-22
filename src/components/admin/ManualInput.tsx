@@ -81,6 +81,11 @@ const ManualInput = ({ onManualSubmit, onFileUpload }: ManualInputProps) => {
             return;
           }
 
+          console.log('File processed, calling onFileUpload with:', {
+            fileName: file.name,
+            contentLength: content.length
+          });
+
           await onFileUpload(file, content);
           
           // Reset file input after successful upload
