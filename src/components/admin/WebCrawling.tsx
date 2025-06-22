@@ -52,7 +52,14 @@ const WebCrawling = () => {
     url?: string
   ) => {
     try {
-      // For admin users, created_by can be null since they don't use Supabase Auth
+      console.log('Saving crawled data with user:', user);
+      
+      // For admin users who aren't authenticated through Supabase Auth, set created_by to null
+      // Only set created_by if the user has a valid Supabase Auth ID
+      const created_by = user?.id && user.email ? user.id : null;
+      
+      console.log('Using created_by:', created_by);
+
       const { error } = await supabase
         .from('crawled_data')
         .insert({
@@ -61,7 +68,7 @@ const WebCrawling = () => {
           category,
           source_type: sourceType,
           url: url || null,
-          created_by: user?.id || null // Allow null for admin users
+          created_by // This will be null for admin users without Supabase Auth
         });
 
       if (error) {
@@ -69,7 +76,14 @@ const WebCrawling = () => {
         throw error;
       }
 
+      console.log('Data saved successfully');
       await fetchCrawledData();
+      
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil disimpan",
+        variant: "default"
+      });
     } catch (error) {
       console.error('Error in saveCrawledData:', error);
       throw error;
@@ -79,6 +93,11 @@ const WebCrawling = () => {
   const handleCrawlComplete = async (title: string, content: string, category: string, url: string) => {
     try {
       await saveCrawledData(title, content, category, 'auto_crawl', url);
+      toast({
+        title: "Crawling Selesai",
+        description: "Data berhasil diambil dan disimpan dari website",
+        variant: "default"
+      });
     } catch (error) {
       toast({
         title: "Error",
@@ -91,7 +110,13 @@ const WebCrawling = () => {
   const handleManualSubmit = async (title: string, content: string, category: string) => {
     try {
       await saveCrawledData(title, content, category, 'manual_input');
+      toast({
+        title: "Berhasil",
+        description: "Data manual berhasil disimpan",
+        variant: "default"
+      });
     } catch (error) {
+      console.error('Error saving manual data:', error);
       toast({
         title: "Error",
         description: "Gagal menyimpan data manual",
@@ -108,7 +133,13 @@ const WebCrawling = () => {
         'dokumen',
         'file_upload'
       );
+      toast({
+        title: "Berhasil",
+        description: `File ${file.name} berhasil diupload dan disimpan`,
+        variant: "default"
+      });
     } catch (error) {
+      console.error('Error saving uploaded file:', error);
       toast({
         title: "Error",
         description: "Gagal menyimpan file yang diupload",

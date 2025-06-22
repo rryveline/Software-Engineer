@@ -20,6 +20,7 @@ const ManualInput = ({ onManualSubmit, onFileUpload }: ManualInputProps) => {
   const [manualContent, setManualContent] = useState('');
   const [manualCategory, setManualCategory] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   const handleManualSubmit = async () => {
     if (!manualTitle || !manualContent || !manualCategory) {
@@ -31,17 +32,16 @@ const ManualInput = ({ onManualSubmit, onFileUpload }: ManualInputProps) => {
       return;
     }
 
-    onManualSubmit(manualTitle, manualContent, manualCategory);
+    try {
+      await onManualSubmit(manualTitle, manualContent, manualCategory);
 
-    toast({
-      title: "Data Tersimpan",
-      description: "Data manual berhasil ditambahkan dan disimpan"
-    });
-
-    // Reset form
-    setManualTitle('');
-    setManualContent('');
-    setManualCategory('');
+      // Reset form after successful submission
+      setManualTitle('');
+      setManualContent('');
+      setManualCategory('');
+    } catch (error) {
+      console.error('Error submitting manual data:', error);
+    }
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,20 +62,61 @@ const ManualInput = ({ onManualSubmit, onFileUpload }: ManualInputProps) => {
     }
 
     setUploadedFile(file);
+    setIsProcessingFile(true);
 
-    // Read file content
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const content = e.target?.result as string;
-      onFileUpload(file, content);
+    try {
+      // Read file content
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const content = e.target?.result as string;
+          
+          if (!content || content.trim().length === 0) {
+            toast({
+              title: "Error",
+              description: "File kosong atau tidak dapat dibaca",
+              variant: "destructive"
+            });
+            setIsProcessingFile(false);
+            return;
+          }
 
+          await onFileUpload(file, content);
+          
+          // Reset file input after successful upload
+          event.target.value = '';
+          setUploadedFile(null);
+        } catch (error) {
+          console.error('Error processing file:', error);
+          toast({
+            title: "Error",
+            description: "Gagal memproses file",
+            variant: "destructive"
+          });
+        } finally {
+          setIsProcessingFile(false);
+        }
+      };
+
+      reader.onerror = () => {
+        toast({
+          title: "Error",
+          description: "Gagal membaca file",
+          variant: "destructive"
+        });
+        setIsProcessingFile(false);
+      };
+
+      reader.readAsText(file);
+    } catch (error) {
+      console.error('Error handling file upload:', error);
       toast({
-        title: "File Berhasil Diupload",
-        description: `File ${file.name} berhasil diupload dan disimpan`
+        title: "Error",
+        description: "Gagal memproses file",
+        variant: "destructive"
       });
-    };
-
-    reader.readAsText(file);
+      setIsProcessingFile(false);
+    }
   };
 
   return (
@@ -136,15 +177,20 @@ const ManualInput = ({ onManualSubmit, onFileUpload }: ManualInputProps) => {
             type="file"
             onChange={handleFileUpload}
             accept=".txt,.md,.doc,.docx"
+            disabled={isProcessingFile}
           />
           {uploadedFile && (
             <p className="text-sm text-gray-600">File: {uploadedFile.name}</p>
+          )}
+          {isProcessingFile && (
+            <p className="text-sm text-blue-600">Memproses file...</p>
           )}
         </div>
 
         <Button 
           onClick={handleManualSubmit}
           className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+          disabled={!manualTitle || !manualContent || !manualCategory}
         >
           <Upload className="w-4 h-4 mr-2" />
           Simpan Data
