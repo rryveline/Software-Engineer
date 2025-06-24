@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { User, Settings, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { User, Settings, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -92,7 +92,7 @@ const Login = () => {
                   id="email"
                   name="email"
                   type="email"
-                  placeholder={isAdmin ? "marketing@unklab.ac.id" : "Masukkan email Anda"}
+                  placeholder={isAdmin ? "Masukkan email admin" : "Masukkan email Anda"}
                   value={formData.email}
                   onChange={handleInputChange}
                   className="border-gray-300 focus:border-purple-500"
@@ -133,20 +133,6 @@ const Login = () => {
                 {isLoading ? 'Memproses...' : 'Login'}
               </Button>
             </form>
-
-            {/* Demo Credentials for Admin */}
-            {isAdmin && (
-              <div className="bg-purple-50 rounded-lg p-4 space-y-2">
-                <div className="flex items-center space-x-2 text-purple-700">
-                  <AlertCircle className="w-4 h-4" />
-                  <span className="text-sm font-medium">Demo Credentials</span>
-                </div>
-                <div className="text-sm text-purple-600 space-y-1">
-                  <p>Email: marketing@unklab.ac.id</p>
-                  <p>Password: unklab</p>
-                </div>
-              </div>
-            )}
 
             <div className="text-center space-y-2">
               <p className="text-sm text-gray-600">

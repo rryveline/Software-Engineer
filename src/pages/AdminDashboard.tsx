@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -23,19 +22,19 @@ const AdminDashboard = () => {
       title: 'Total Data',
       value: '3',
       icon: Database,
-      color: 'from-blue-500 to-blue-600'
+      color: 'from-purple-500 to-purple-600'
     },
     {
       title: 'Chat Logs',
       value: '2',
       icon: MessageSquare,
-      color: 'from-green-500 to-green-600'
+      color: 'from-purple-500 to-purple-600'
     },
     {
       title: 'Crawled Data',
       value: '1',
       icon: Globe,
-      color: 'from-orange-500 to-orange-600'
+      color: 'from-purple-500 to-purple-600'
     },
     {
       title: 'Status',
