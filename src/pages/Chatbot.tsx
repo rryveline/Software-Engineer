@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Send, Bot, User, MessageCircle, Sparkles, LogIn } from 'lucide-react';
+import { Send, Bot, User, MessageCircle, Sparkles, LogIn, Clock } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -41,6 +41,13 @@ const Chatbot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('id-ID', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
 
   const generateBotResponse = (userMessage: string): { text: string; suggestions?: string[] } => {
     const message = userMessage.toLowerCase();
@@ -132,80 +139,105 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50">
-      <div className="max-w-4xl mx-auto p-4">
-        {/* Header */}
-        <div className="text-center py-8">
-          <div className="inline-flex items-center space-x-3 bg-white rounded-full px-6 py-3 shadow-lg border border-gray-200">
-            <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
-              <Bot className="w-6 h-6 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-violet-50 relative overflow-hidden">
+      {/* Enhanced Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-purple-200/30 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-40 h-40 bg-violet-200/20 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-purple-300/25 rounded-full blur-lg animate-pulse delay-2000"></div>
+        <div className="absolute top-1/3 right-1/3 w-20 h-20 bg-violet-300/15 rounded-full blur-xl animate-pulse delay-500"></div>
+      </div>
+
+      <div className="max-w-5xl mx-auto p-4 relative z-10">
+        {/* Enhanced Header */}
+        <div className="text-center py-6 mb-4">
+          <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-md rounded-2xl px-8 py-4 shadow-xl border border-white/20">
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-purple-700 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
+                <Bot className="w-7 h-7 text-white" />
+              </div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
             </div>
-            <div>
-              <h1 className="text-xl font-bold text-gray-800">UNKLAB ChatBot</h1>
-              <p className="text-sm text-gray-600">AI Assistant untuk informasi kampus</p>
+            <div className="text-left">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-violet-700 bg-clip-text text-transparent">
+                UNKLAB ChatBot
+              </h1>
+              <p className="text-sm text-gray-600 font-medium">AI Assistant untuk informasi kampus</p>
             </div>
-            <Sparkles className="w-5 h-5 text-purple-500" />
+            <Sparkles className="w-6 h-6 text-purple-500 animate-pulse" />
           </div>
         </div>
 
-        {/* Chat Container */}
-        <Card className="shadow-xl border-0 bg-white/90 backdrop-blur-sm">
+        {/* Enhanced Chat Container */}
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden">
           <CardContent className="p-0">
-            {/* Messages */}
-            <div className="h-[500px] overflow-y-auto p-6 space-y-4">
+            {/* Messages with better styling */}
+            <div className="h-[520px] overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-white/50">
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`flex items-start space-x-2 max-w-[80%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                    {/* Avatar */}
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                  <div className={`flex items-start space-x-3 max-w-[85%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                    {/* Enhanced Avatar */}
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg ${
                       message.sender === 'user' 
-                        ? 'bg-gradient-to-br from-gray-600 to-gray-700' 
-                        : 'bg-gradient-to-br from-purple-600 to-violet-600'
+                        ? 'bg-gradient-to-br from-gray-600 to-gray-800' 
+                        : 'bg-gradient-to-br from-purple-600 via-purple-700 to-violet-600'
                     }`}>
                       {message.sender === 'user' ? (
-                        <User className="w-4 h-4 text-white" />
+                        <User className="w-5 h-5 text-white" />
                       ) : (
-                        <Bot className="w-4 h-4 text-white" />
+                        <Bot className="w-5 h-5 text-white" />
                       )}
                     </div>
                     
-                    {/* Message Content */}
-                    <div className={`rounded-2xl px-4 py-3 ${
-                      message.sender === 'user'
-                        ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}>
-                      <p className="whitespace-pre-line text-sm leading-relaxed">{message.text}</p>
-                      {message.suggestions && user && (
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          {message.suggestions.map((suggestion, index) => (
-                            <button
-                              key={index}
-                              onClick={() => handleSuggestionClick(suggestion)}
-                              className="bg-white/20 hover:bg-white/30 text-xs px-3 py-1 rounded-full transition-colors"
-                            >
-                              {suggestion}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                    {/* Enhanced Message Content */}
+                    <div className="flex flex-col space-y-1">
+                      <div className={`rounded-2xl px-5 py-4 shadow-lg ${
+                        message.sender === 'user'
+                          ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white'
+                          : 'bg-white text-gray-800 border border-gray-100'
+                      }`}>
+                        <p className="whitespace-pre-line text-sm leading-relaxed font-medium">{message.text}</p>
+                        
+                        {/* Enhanced Suggestions */}
+                        {message.suggestions && user && (
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {message.suggestions.map((suggestion, index) => (
+                              <button
+                                key={index}
+                                onClick={() => handleSuggestionClick(suggestion)}
+                                className="bg-white/20 hover:bg-white/30 text-xs px-3 py-2 rounded-full transition-all duration-200 hover:scale-105 border border-white/20 font-medium"
+                              >
+                                {suggestion}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Timestamp */}
+                      <div className={`flex items-center space-x-1 text-xs text-gray-500 ${
+                        message.sender === 'user' ? 'justify-end' : 'justify-start'
+                      }`}>
+                        <Clock className="w-3 h-3" />
+                        <span>{formatTime(message.timestamp)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
               ))}
               
-              {/* Typing Indicator */}
+              {/* Enhanced Typing Indicator */}
               {isTyping && (
                 <div className="flex justify-start">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-purple-600 to-violet-600 rounded-full flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-white" />
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-purple-600 via-purple-700 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
+                      <Bot className="w-5 h-5 text-white" />
                     </div>
-                    <div className="bg-gray-100 rounded-2xl px-4 py-3">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-100"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-200"></div>
+                    <div className="bg-white rounded-2xl px-5 py-4 shadow-lg border border-gray-100">
+                      <div className="flex space-x-2">
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-100"></div>
+                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce delay-200"></div>
                       </div>
                     </div>
                   </div>
@@ -215,34 +247,39 @@ const Chatbot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
-            <div className="border-t border-gray-200 p-4 bg-gray-50">
+            {/* Enhanced Input Area */}
+            <div className="border-t border-gray-100 p-6 bg-white/80 backdrop-blur-sm">
               {!user ? (
-                <div className="text-center py-4">
-                  <p className="text-gray-600 mb-4">Silakan login untuk menggunakan chatbot</p>
+                <div className="text-center py-6">
+                  <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl mb-4">
+                    <LogIn className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <p className="text-gray-700 mb-6 font-medium">Silakan login untuk menggunakan chatbot</p>
                   <Link to="/login/user">
-                    <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700">
-                      <LogIn className="w-4 h-4 mr-2" />
+                    <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 px-8 py-3 rounded-xl">
+                      <LogIn className="w-5 h-5 mr-2" />
                       Login untuk Chat
                     </Button>
                   </Link>
                 </div>
               ) : (
-                <div className="flex items-center space-x-3">
-                  <Input
-                    value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    placeholder="Ketik pertanyaan Anda disini..."
-                    className="flex-1 border-gray-300 focus:border-purple-500 bg-white"
-                    disabled={isTyping}
-                  />
+                <div className="flex items-center space-x-4">
+                  <div className="flex-1 relative">
+                    <Input
+                      value={inputMessage}
+                      onChange={(e) => setInputMessage(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Ketik pertanyaan Anda disini..."
+                      className="pr-4 py-3 border-gray-200 focus:border-purple-400 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm focus:shadow-md transition-all duration-200 font-medium"
+                      disabled={isTyping}
+                    />
+                  </div>
                   <Button
                     onClick={handleSendMessage}
                     disabled={!inputMessage.trim() || isTyping}
-                    className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
+                    className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 disabled:from-gray-400 disabled:to-gray-500 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:transform-none disabled:scale-100 px-6 py-3 rounded-xl"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-5 h-5" />
                   </Button>
                 </div>
               )}
