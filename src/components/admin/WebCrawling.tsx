@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,12 +51,16 @@ const WebCrawling = () => {
     url?: string
   ) => {
     try {
-      console.log('Saving crawled data with user:', user);
+      // Logging user untuk debugging
+      console.log('user:', user);
       
-      // Set created_by to null for admin users without Supabase Auth ID
-      const created_by = user?.id && user.email ? user.id : null;
-      
-      console.log('Using created_by:', created_by);
+      // Only use user.id if it is a real Supabase Auth user (aud === 'authenticated'), otherwise set created_by to null
+      let created_by = null;
+      if (user?.id && user.email && user.aud === 'authenticated') {
+        created_by = user.id;
+      } else {
+        created_by = null; // Force null if not a Supabase Auth user
+      }
 
       const insertData = {
         title,
@@ -66,9 +69,10 @@ const WebCrawling = () => {
         source_type: sourceType,
         status: 'success', // Always set status to success for successful crawls
         url: url || null,
-        created_by // This will be null for admin users without Supabase Auth
+        created_by // This will be null for admin users or if not logged in
       };
 
+      // Logging insertData untuk debugging
       console.log('Insert data:', insertData);
 
       const { error } = await supabase

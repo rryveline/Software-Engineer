@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +16,7 @@ const AutoCrawling = ({ onCrawlComplete }: AutoCrawlingProps) => {
   const [crawlUrl, setCrawlUrl] = useState('https://unklab.ac.id');
   const [crawlProgress, setCrawlProgress] = useState(0);
   const [isCrawling, setIsCrawling] = useState(false);
+  const [shouldComplete, setShouldComplete] = useState(false);
 
   const handleStartCrawling = async () => {
     if (!crawlUrl) {
@@ -31,30 +31,34 @@ const AutoCrawling = ({ onCrawlComplete }: AutoCrawlingProps) => {
     setIsCrawling(true);
     setCrawlProgress(0);
 
-    // Simulate crawling progress
     const interval = setInterval(() => {
       setCrawlProgress(prev => {
         if (prev >= 100) {
           clearInterval(interval);
           setIsCrawling(false);
-          
-          // Simulate saving crawled data
-          const title = `Data dari ${crawlUrl}`;
-          const content = `Konten yang berhasil di-crawl dari website ${crawlUrl}. Ini adalah contoh data yang dikumpulkan secara otomatis dari halaman web.`;
-          
-          onCrawlComplete(title, content, 'akademik', crawlUrl);
-          
-          toast({
-            title: "Crawling Selesai",
-            description: "Data berhasil diambil dan disimpan dari website UNKLAB"
-          });
-          
+          setShouldComplete(true);
           return 100;
         }
         return prev + 10;
       });
     }, 300);
   };
+
+  useEffect(() => {
+    if (shouldComplete && crawlProgress === 100) {
+      const title = `Data dari ${crawlUrl}`;
+      const content = `Konten yang berhasil di-crawl dari website ${crawlUrl}. Ini adalah contoh data yang dikumpulkan secara otomatis dari halaman web.`;
+
+      onCrawlComplete(title, content, 'akademik', crawlUrl);
+
+      toast({
+        title: "Crawling Selesai",
+        description: "Data berhasil diambil dan disimpan dari website UNKLAB"
+      });
+
+      setShouldComplete(false);
+    }
+  }, [shouldComplete, crawlProgress, crawlUrl, onCrawlComplete, toast]);
 
   return (
     <Card>
