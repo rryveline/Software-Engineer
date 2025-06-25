@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -148,9 +149,9 @@ const Chatbot = () => {
         <div className="absolute top-1/3 right-1/3 w-20 h-20 bg-violet-300/15 rounded-full blur-xl animate-pulse delay-500"></div>
       </div>
 
-      <div className="max-w-5xl mx-auto p-4 relative z-10">
+      <div className="max-w-5xl mx-auto p-4 relative z-10 flex flex-col h-screen">
         {/* Enhanced Header */}
-        <div className="text-center py-6 mb-4">
+        <div className="text-center py-4 mb-4 flex-shrink-0">
           <div className="inline-flex items-center space-x-4 bg-white/80 backdrop-blur-md rounded-2xl px-8 py-4 shadow-xl border border-white/20">
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-600 via-purple-700 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg">
@@ -168,11 +169,11 @@ const Chatbot = () => {
           </div>
         </div>
 
-        {/* Enhanced Chat Container */}
-        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden">
-          <CardContent className="p-0">
-            {/* Messages with better styling */}
-            <div className="h-[520px] overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-white/50">
+        {/* Enhanced Chat Container with flexible height */}
+        <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm rounded-3xl overflow-hidden flex-1 flex flex-col min-h-0">
+          <CardContent className="p-0 flex flex-col h-full">
+            {/* Messages with constrained height */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gradient-to-b from-gray-50/50 to-white/50 min-h-0">
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`flex items-start space-x-3 max-w-[85%] ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
@@ -247,14 +248,14 @@ const Chatbot = () => {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Enhanced Input Area */}
-            <div className="border-t border-gray-100 p-6 bg-white/80 backdrop-blur-sm">
+            {/* Enhanced Input Area - fixed at bottom */}
+            <div className="border-t border-gray-100 p-6 bg-white/80 backdrop-blur-sm flex-shrink-0">
               {!user ? (
-                <div className="text-center py-6">
+                <div className="text-center py-4">
                   <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-100 to-violet-100 rounded-2xl mb-4">
                     <LogIn className="w-8 h-8 text-purple-600" />
                   </div>
-                  <p className="text-gray-700 mb-6 font-medium">Silakan login untuk menggunakan chatbot</p>
+                  <p className="text-gray-700 mb-4 font-medium">Silakan login untuk menggunakan chatbot</p>
                   <Link to="/login/user">
                     <Button className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 px-8 py-3 rounded-xl">
                       <LogIn className="w-5 h-5 mr-2" />
