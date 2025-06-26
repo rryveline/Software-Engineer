@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -171,8 +170,33 @@ const WebCrawling = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  // Handler untuk crawling backend
+  const handleStartCrawlingBackend = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/start-crawling', { method: 'POST' });
+      const data = await res.json();
+      toast({
+        title: 'Backend Crawling',
+        description: data.message,
+        variant: 'default'
+      });
+    } catch (err) {
+      toast({
+        title: 'Error',
+        description: 'Gagal memulai crawling backend',
+        variant: 'destructive'
+      });
+    }
+  };
+
   return (
     <div className="space-y-6">
+      <button
+        onClick={handleStartCrawlingBackend}
+        className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition mb-2"
+      >
+        Start Crawling (Backend)
+      </button>
       <AutoCrawling onCrawlComplete={handleCrawlComplete} />
       <ManualInput 
         onManualSubmit={handleManualSubmit}
