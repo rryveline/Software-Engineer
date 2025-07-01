@@ -428,16 +428,65 @@ const DataManagement = () => {
                       </Badge>
                     </div>
                     <p className="text-gray-600">{item.content}</p>
-                    {item.url && (
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline text-sm"
-                      >
-                        {item.url}
-                      </a>
-                    )}
+                    {item.url &&
+                      (item.url.match(/\.pdf$/i) ? (
+                        <div className="my-2">
+                          <iframe
+                            src={item.url}
+                            title="Preview PDF"
+                            width="100%"
+                            height="400px"
+                            style={{
+                              border: "1px solid #eee",
+                              borderRadius: 8,
+                            }}
+                          />
+                          <div className="mt-2">
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline text-sm"
+                            >
+                              Buka file PDF di tab baru
+                            </a>
+                          </div>
+                        </div>
+                      ) : item.url.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                        <div className="my-2">
+                          <a
+                            href={item.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              src={item.url}
+                              alt="Preview Gambar"
+                              className="max-h-60 rounded border mb-2 shadow"
+                              style={{ maxWidth: "100%" }}
+                            />
+                          </a>
+                          <div>
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline text-sm"
+                            >
+                              Buka gambar di tab baru
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 underline text-sm"
+                        >
+                          {item.url}
+                        </a>
+                      ))}
                     <p className="text-xs text-gray-400">
                       Terakhir diupdate:{" "}
                       {item.updated_at
