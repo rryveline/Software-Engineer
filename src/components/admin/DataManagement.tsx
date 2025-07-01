@@ -76,6 +76,15 @@ const DataManagement = () => {
 
   // Add manual data
   const handleAddData = async () => {
+    if (!user || !user.id) {
+      toast({
+        title: "Error",
+        description: "User tidak valid. Silakan login ulang.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
     if (!formData.title || !formData.category || !formData.content) {
       toast({
         title: "Error",
@@ -88,20 +97,20 @@ const DataManagement = () => {
     let fileUrl = "";
     if (file) {
       const safeFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-      const filePath = `manual-uploads/${Date.now()}-${safeFileName}`;
+      const filePath = `${Date.now()}-${safeFileName}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("lovable-uploads")
+        .from("manual-uploads")
         .upload(filePath, file);
       if (uploadError) {
         setLoading(false);
         toast({
           title: "Error",
-          description: "Gagal upload file",
+          description: `Gagal upload file: ${uploadError.message}`,
           variant: "destructive",
         });
         return;
       }
-      fileUrl = supabase.storage.from("lovable-uploads").getPublicUrl(filePath)
+      fileUrl = supabase.storage.from("manual-uploads").getPublicUrl(filePath)
         .data.publicUrl;
     }
     const newData: TablesInsert<"crawled_data"> = {
@@ -109,11 +118,11 @@ const DataManagement = () => {
       category: formData.category,
       content: formData.content,
       url: fileUrl,
-      created_by: user?.id || "manual",
+      created_by: user.id,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
-      source_type: "manual",
-      status: "active",
+      source_type: "manual_input",
+      status: "success",
     };
     const { error, data } = await supabase
       .from("crawled_data")
@@ -123,7 +132,7 @@ const DataManagement = () => {
     if (error) {
       toast({
         title: "Error",
-        description: "Gagal menambah data",
+        description: `Gagal menambah data: ${error.message}`,
         variant: "destructive",
       });
     } else {
