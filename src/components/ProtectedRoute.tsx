@@ -1,13 +1,12 @@
-
-import { useAuth } from '@/hooks/useAuth';
-import { AuthForm } from '@/components/AuthForm';
+import { useAuth } from "@/hooks/useAuth";
+import { AuthForm } from "@/components/AuthForm";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, loading } = useAuth();
 
   if (loading) {
     return (
@@ -22,8 +21,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  // Allow access if user is logged in as regular user OR as admin
-  if (!user && !isAdmin) {
+  if (!user) {
     return <AuthForm />;
   }
 
