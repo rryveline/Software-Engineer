@@ -1,36 +1,35 @@
-
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Search, 
-  Globe, 
+import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Search,
+  Globe,
   Download,
   Database,
   Activity,
   Users,
   MessageSquare,
   Lock,
-  Unlock
-} from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+  Unlock,
+} from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface CampusData {
   id: string;
   title: string;
   content: string;
-  category: 'program' | 'facility' | 'news' | 'schedule';
+  category: "program" | "facility" | "news" | "schedule";
   cost?: number;
   faculty?: string;
-  source: 'manual' | 'crawled';
+  source: "manual" | "crawled";
   lastUpdated: Date;
 }
 
@@ -43,94 +42,77 @@ interface ChatLog {
 }
 
 export const AdminPanel = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [password, setPassword] = useState('');
   const [campusData, setCampusData] = useState<CampusData[]>([]);
   const [chatLogs, setChatLogs] = useState<ChatLog[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [editingItem, setEditingItem] = useState<CampusData | null>(null);
   const [newItem, setNewItem] = useState<Partial<CampusData>>({
-    title: '',
-    content: '',
-    category: 'program',
-    source: 'manual'
+    title: "",
+    content: "",
+    category: "program",
+    source: "manual",
   });
   const { toast } = useToast();
 
-  // T05 - Simple admin authentication
-  const handleLogin = () => {
-    if (password === 'admin123') {
-      setIsAuthenticated(true);
-      toast({
-        title: "Login Berhasil",
-        description: "Selamat datang di panel admin",
-      });
-    } else {
-      toast({
-        title: "Login Gagal",
-        description: "Password salah",
-        variant: "destructive",
-      });
-    }
-  };
-
   // T01 - Initialize sample data (Database structure simulation)
   useEffect(() => {
-    if (isAuthenticated) {
-      const sampleData: CampusData[] = [
-        {
-          id: '1',
-          title: 'Teknik Informatika',
-          content: 'Program studi yang mempelajari pengembangan sistem informasi dan teknologi komputer',
-          category: 'program',
-          cost: 45000000,
-          faculty: 'Fakultas Teknik',
-          source: 'manual',
-          lastUpdated: new Date()
-        },
-        {
-          id: '2',
-          title: 'Perpustakaan Pusat',
-          content: 'Fasilitas perpustakaan dengan koleksi buku lengkap dan akses digital',
-          category: 'facility',
-          source: 'manual',
-          lastUpdated: new Date()
-        },
-        {
-          id: '3',
-          title: 'Pendaftaran Mahasiswa Baru 2024',
-          content: 'Pendaftaran dibuka mulai Januari hingga Juli 2024',
-          category: 'news',
-          source: 'crawled',
-          lastUpdated: new Date()
-        }
-      ];
-      setCampusData(sampleData);
+    const sampleData: CampusData[] = [
+      {
+        id: "1",
+        title: "Teknik Informatika",
+        content:
+          "Program studi yang mempelajari pengembangan sistem informasi dan teknologi komputer",
+        category: "program",
+        cost: 45000000,
+        faculty: "Fakultas Teknik",
+        source: "manual",
+        lastUpdated: new Date(),
+      },
+      {
+        id: "2",
+        title: "Perpustakaan Pusat",
+        content:
+          "Fasilitas perpustakaan dengan koleksi buku lengkap dan akses digital",
+        category: "facility",
+        source: "manual",
+        lastUpdated: new Date(),
+      },
+      {
+        id: "3",
+        title: "Pendaftaran Mahasiswa Baru 2024",
+        content: "Pendaftaran dibuka mulai Januari hingga Juli 2024",
+        category: "news",
+        source: "crawled",
+        lastUpdated: new Date(),
+      },
+    ];
+    setCampusData(sampleData);
 
-      // T12 - Sample chat logs
-      const sampleLogs: ChatLog[] = [
-        {
-          id: '1',
-          userQuery: 'Berapa biaya kuliah Teknik Informatika?',
-          botResponse: 'Biaya kuliah Teknik Informatika adalah Rp 45.000.000',
-          timestamp: new Date(Date.now() - 3600000)
-        },
-        {
-          id: '2',
-          userQuery: 'Apa saja fasilitas kampus?',
-          botResponse: 'Fasilitas kampus meliputi perpustakaan, laboratorium, asrama, dll.',
-          timestamp: new Date(Date.now() - 1800000)
-        }
-      ];
-      setChatLogs(sampleLogs);
-    }
-  }, [isAuthenticated]);
+    // T12 - Sample chat logs
+    const sampleLogs: ChatLog[] = [
+      {
+        id: "1",
+        userQuery: "Berapa biaya kuliah Teknik Informatika?",
+        botResponse: "Biaya kuliah Teknik Informatika adalah Rp 45.000.000",
+        timestamp: new Date(Date.now() - 3600000),
+      },
+      {
+        id: "2",
+        userQuery: "Apa saja fasilitas kampus?",
+        botResponse:
+          "Fasilitas kampus meliputi perpustakaan, laboratorium, asrama, dll.",
+        timestamp: new Date(Date.now() - 1800000),
+      },
+    ];
+    setChatLogs(sampleLogs);
+  }, []);
 
   // T07 - Search functionality
-  const filteredData = campusData.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.category.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredData = campusData.filter(
+    (item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   // T06 - CRUD Operations
@@ -151,12 +133,17 @@ export const AdminPanel = () => {
       category: newItem.category as any,
       cost: newItem.cost,
       faculty: newItem.faculty,
-      source: 'manual',
-      lastUpdated: new Date()
+      source: "manual",
+      lastUpdated: new Date(),
     };
 
-    setCampusData(prev => [...prev, item]);
-    setNewItem({ title: '', content: '', category: 'program', source: 'manual' });
+    setCampusData((prev) => [...prev, item]);
+    setNewItem({
+      title: "",
+      content: "",
+      category: "program",
+      source: "manual",
+    });
     toast({
       title: "Berhasil",
       description: "Data berhasil ditambahkan",
@@ -170,11 +157,13 @@ export const AdminPanel = () => {
   const handleUpdateItem = () => {
     if (!editingItem) return;
 
-    setCampusData(prev => prev.map(item => 
-      item.id === editingItem.id 
-        ? { ...editingItem, lastUpdated: new Date() }
-        : item
-    ));
+    setCampusData((prev) =>
+      prev.map((item) =>
+        item.id === editingItem.id
+          ? { ...editingItem, lastUpdated: new Date() }
+          : item
+      )
+    );
     setEditingItem(null);
     toast({
       title: "Berhasil",
@@ -183,7 +172,7 @@ export const AdminPanel = () => {
   };
 
   const handleDeleteItem = (id: string) => {
-    setCampusData(prev => prev.filter(item => item.id !== id));
+    setCampusData((prev) => prev.filter((item) => item.id !== id));
     toast({
       title: "Berhasil",
       description: "Data berhasil dihapus",
@@ -202,63 +191,29 @@ export const AdminPanel = () => {
       const crawledData: CampusData[] = [
         {
           id: Date.now().toString(),
-          title: 'Pengumuman Wisuda 2024',
-          content: 'Wisuda akan dilaksanakan pada bulan November 2024',
-          category: 'news',
-          source: 'crawled',
-          lastUpdated: new Date()
+          title: "Pengumuman Wisuda 2024",
+          content: "Wisuda akan dilaksanakan pada bulan November 2024",
+          category: "news",
+          source: "crawled",
+          lastUpdated: new Date(),
         },
         {
           id: (Date.now() + 1).toString(),
-          title: 'Jadwal UTS Semester Genap',
-          content: 'UTS akan dilaksanakan mulai tanggal 15 April 2024',
-          category: 'schedule',
-          source: 'crawled',
-          lastUpdated: new Date()
-        }
+          title: "Jadwal UTS Semester Genap",
+          content: "UTS akan dilaksanakan mulai tanggal 15 April 2024",
+          category: "schedule",
+          source: "crawled",
+          lastUpdated: new Date(),
+        },
       ];
 
-      setCampusData(prev => [...prev, ...crawledData]);
+      setCampusData((prev) => [...prev, ...crawledData]);
       toast({
         title: "Crawling Selesai",
         description: `Berhasil mengambil ${crawledData.length} data baru`,
       });
     }, 3000);
   };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-96">
-        <Card className="w-full max-w-md p-6">
-          <div className="text-center mb-6">
-            <Lock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-xl font-semibold">Admin Login</h2>
-            <p className="text-gray-600">Masukkan password untuk mengakses panel admin</p>
-          </div>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Masukkan password admin"
-                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
-              />
-            </div>
-            <Button onClick={handleLogin} className="w-full">
-              <Unlock className="h-4 w-4 mr-2" />
-              Login
-            </Button>
-            <div className="text-xs text-center text-gray-500">
-              Demo: gunakan password "admin123"
-            </div>
-          </div>
-        </Card>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
@@ -288,7 +243,7 @@ export const AdminPanel = () => {
             <div>
               <p className="text-sm text-gray-600">Crawled Data</p>
               <p className="text-2xl font-bold">
-                {campusData.filter(item => item.source === 'crawled').length}
+                {campusData.filter((item) => item.source === "crawled").length}
               </p>
             </div>
           </div>
@@ -317,7 +272,10 @@ export const AdminPanel = () => {
           <Card className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">Kelola Data Kampus</h3>
-              <Button onClick={() => setEditingItem({} as CampusData)} className="bg-blue-600">
+              <Button
+                onClick={() => setEditingItem({} as CampusData)}
+                className="bg-blue-600"
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Tambah Data
               </Button>
@@ -340,16 +298,20 @@ export const AdminPanel = () => {
             {(editingItem || Object.keys(newItem).length > 2) && (
               <Card className="p-4 mb-4 bg-blue-50">
                 <h4 className="font-medium mb-3">
-                  {editingItem?.id ? 'Edit Data' : 'Tambah Data Baru'}
+                  {editingItem?.id ? "Edit Data" : "Tambah Data Baru"}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <Label>Judul</Label>
                     <Input
-                      value={editingItem?.title || newItem.title || ''}
-                      onChange={(e) => editingItem 
-                        ? setEditingItem({...editingItem, title: e.target.value})
-                        : setNewItem({...newItem, title: e.target.value})
+                      value={editingItem?.title || newItem.title || ""}
+                      onChange={(e) =>
+                        editingItem
+                          ? setEditingItem({
+                              ...editingItem,
+                              title: e.target.value,
+                            })
+                          : setNewItem({ ...newItem, title: e.target.value })
                       }
                     />
                   </div>
@@ -357,10 +319,19 @@ export const AdminPanel = () => {
                     <Label>Kategori</Label>
                     <select
                       className="w-full p-2 border rounded-md"
-                      value={editingItem?.category || newItem.category || 'program'}
-                      onChange={(e) => editingItem
-                        ? setEditingItem({...editingItem, category: e.target.value as any})
-                        : setNewItem({...newItem, category: e.target.value as any})
+                      value={
+                        editingItem?.category || newItem.category || "program"
+                      }
+                      onChange={(e) =>
+                        editingItem
+                          ? setEditingItem({
+                              ...editingItem,
+                              category: e.target.value as any,
+                            })
+                          : setNewItem({
+                              ...newItem,
+                              category: e.target.value as any,
+                            })
                       }
                     >
                       <option value="program">Program Studi</option>
@@ -372,34 +343,53 @@ export const AdminPanel = () => {
                   <div className="md:col-span-2">
                     <Label>Konten</Label>
                     <Textarea
-                      value={editingItem?.content || newItem.content || ''}
-                      onChange={(e) => editingItem
-                        ? setEditingItem({...editingItem, content: e.target.value})
-                        : setNewItem({...newItem, content: e.target.value})
+                      value={editingItem?.content || newItem.content || ""}
+                      onChange={(e) =>
+                        editingItem
+                          ? setEditingItem({
+                              ...editingItem,
+                              content: e.target.value,
+                            })
+                          : setNewItem({ ...newItem, content: e.target.value })
                       }
                       rows={3}
                     />
                   </div>
-                  {(editingItem?.category === 'program' || newItem.category === 'program') && (
+                  {(editingItem?.category === "program" ||
+                    newItem.category === "program") && (
                     <>
                       <div>
                         <Label>Biaya (Rp)</Label>
                         <Input
                           type="number"
-                          value={editingItem?.cost || newItem.cost || ''}
-                          onChange={(e) => editingItem
-                            ? setEditingItem({...editingItem, cost: Number(e.target.value)})
-                            : setNewItem({...newItem, cost: Number(e.target.value)})
+                          value={editingItem?.cost || newItem.cost || ""}
+                          onChange={(e) =>
+                            editingItem
+                              ? setEditingItem({
+                                  ...editingItem,
+                                  cost: Number(e.target.value),
+                                })
+                              : setNewItem({
+                                  ...newItem,
+                                  cost: Number(e.target.value),
+                                })
                           }
                         />
                       </div>
                       <div>
                         <Label>Fakultas</Label>
                         <Input
-                          value={editingItem?.faculty || newItem.faculty || ''}
-                          onChange={(e) => editingItem
-                            ? setEditingItem({...editingItem, faculty: e.target.value})
-                            : setNewItem({...newItem, faculty: e.target.value})
+                          value={editingItem?.faculty || newItem.faculty || ""}
+                          onChange={(e) =>
+                            editingItem
+                              ? setEditingItem({
+                                  ...editingItem,
+                                  faculty: e.target.value,
+                                })
+                              : setNewItem({
+                                  ...newItem,
+                                  faculty: e.target.value,
+                                })
                           }
                         />
                       </div>
@@ -411,13 +401,18 @@ export const AdminPanel = () => {
                     onClick={editingItem?.id ? handleUpdateItem : handleAddItem}
                     className="bg-green-600"
                   >
-                    {editingItem?.id ? 'Update' : 'Simpan'}
+                    {editingItem?.id ? "Update" : "Simpan"}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={() => {
                       setEditingItem(null);
-                      setNewItem({ title: '', content: '', category: 'program', source: 'manual' });
+                      setNewItem({
+                        title: "",
+                        content: "",
+                        category: "program",
+                        source: "manual",
+                      });
                     }}
                   >
                     Batal
@@ -428,28 +423,35 @@ export const AdminPanel = () => {
 
             {/* Data List */}
             <div className="space-y-3">
-              {filteredData.map(item => (
+              {filteredData.map((item) => (
                 <Card key={item.id} className="p-4">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2 mb-2">
                         <h4 className="font-medium">{item.title}</h4>
-                        <Badge variant={item.source === 'manual' ? 'default' : 'secondary'}>
+                        <Badge
+                          variant={
+                            item.source === "manual" ? "default" : "secondary"
+                          }
+                        >
                           {item.source}
                         </Badge>
                         <Badge variant="outline">{item.category}</Badge>
                       </div>
-                      <p className="text-gray-600 text-sm mb-2">{item.content}</p>
+                      <p className="text-gray-600 text-sm mb-2">
+                        {item.content}
+                      </p>
                       {item.cost && (
                         <p className="text-sm font-medium text-green-600">
-                          Biaya: Rp {item.cost.toLocaleString('id-ID')}
+                          Biaya: Rp {item.cost.toLocaleString("id-ID")}
                         </p>
                       )}
                       {item.faculty && (
                         <p className="text-sm text-gray-500">{item.faculty}</p>
                       )}
                       <p className="text-xs text-gray-400 mt-2">
-                        Terakhir diupdate: {item.lastUpdated.toLocaleString('id-ID')}
+                        Terakhir diupdate:{" "}
+                        {item.lastUpdated.toLocaleString("id-ID")}
                       </p>
                     </div>
                     <div className="flex space-x-2">
@@ -495,7 +497,10 @@ export const AdminPanel = () => {
                       <option>Manual</option>
                     </select>
                   </div>
-                  <Button onClick={handleCrawling} className="w-full bg-orange-600">
+                  <Button
+                    onClick={handleCrawling}
+                    className="w-full bg-orange-600"
+                  >
                     <Globe className="h-4 w-4 mr-2" />
                     Start Crawling
                   </Button>
@@ -510,7 +515,13 @@ export const AdminPanel = () => {
                   </div>
                   <div className="flex justify-between">
                     <span>Data Retrieved:</span>
-                    <span>{campusData.filter(item => item.source === 'crawled').length} items</span>
+                    <span>
+                      {
+                        campusData.filter((item) => item.source === "crawled")
+                          .length
+                      }{" "}
+                      items
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span>Status:</span>
@@ -533,20 +544,24 @@ export const AdminPanel = () => {
               </Button>
             </div>
             <div className="space-y-3">
-              {chatLogs.map(log => (
+              {chatLogs.map((log) => (
                 <Card key={log.id} className="p-4 bg-gray-50">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <Label className="text-xs text-gray-500">User Query</Label>
+                      <Label className="text-xs text-gray-500">
+                        User Query
+                      </Label>
                       <p className="text-sm font-medium">{log.userQuery}</p>
                     </div>
                     <div>
-                      <Label className="text-xs text-gray-500">Bot Response</Label>
+                      <Label className="text-xs text-gray-500">
+                        Bot Response
+                      </Label>
                       <p className="text-sm">{log.botResponse}</p>
                     </div>
                   </div>
                   <div className="mt-2 text-xs text-gray-400">
-                    {log.timestamp.toLocaleString('id-ID')}
+                    {log.timestamp.toLocaleString("id-ID")}
                   </div>
                 </Card>
               ))}
@@ -581,8 +596,14 @@ export const AdminPanel = () => {
                 <Label htmlFor="log-enabled">Enable chat logging</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <input type="checkbox" id="suggestions-enabled" defaultChecked />
-                <Label htmlFor="suggestions-enabled">Enable auto-suggestions</Label>
+                <input
+                  type="checkbox"
+                  id="suggestions-enabled"
+                  defaultChecked
+                />
+                <Label htmlFor="suggestions-enabled">
+                  Enable auto-suggestions
+                </Label>
               </div>
               <Button className="bg-blue-600">Save Settings</Button>
             </div>

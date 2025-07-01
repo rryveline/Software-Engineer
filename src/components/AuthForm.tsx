@@ -1,22 +1,34 @@
-
-import { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
-import { GraduationCap, Mail, Lock, User, Shield, UserCheck } from 'lucide-react';
+import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
+import {
+  GraduationCap,
+  Mail,
+  Lock,
+  User,
+  Shield,
+  UserCheck,
+} from "lucide-react";
 
 export const AuthForm = () => {
-  const [authMode, setAuthMode] = useState<'select' | 'user'>('select');
+  const [authMode, setAuthMode] = useState<"select" | "user">("select");
   const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, signInAsAdmin } = useAuth();
+  const { signIn, signUp } = useAuth();
   const { toast } = useToast();
 
   const handleUserAuth = async (e: React.FormEvent) => {
@@ -30,12 +42,12 @@ export const AuthForm = () => {
           toast({
             title: "Error Login",
             description: error.message,
-            variant: "destructive"
+            variant: "destructive",
           });
         } else {
           toast({
             title: "Login Berhasil",
-            description: "Selamat datang di UNKLAB Info Bot!"
+            description: "Selamat datang di UNKLAB Info Bot!",
           });
         }
       } else {
@@ -43,61 +55,31 @@ export const AuthForm = () => {
           toast({
             title: "Error",
             description: "Nama lengkap harus diisi",
-            variant: "destructive"
+            variant: "destructive",
           });
           return;
         }
-        
+
         const { error } = await signUp(email, password, fullName);
         if (error) {
           toast({
             title: "Error Registrasi",
             description: error.message,
-            variant: "destructive"
+            variant: "destructive",
           });
         } else {
           toast({
             title: "Registrasi Berhasil",
-            description: "Silakan cek email Anda untuk verifikasi akun."
+            description: "Silakan cek email Anda untuk verifikasi akun.",
           });
         }
       }
     } catch (error) {
-      console.error('Auth error:', error);
+      console.error("Auth error:", error);
       toast({
         title: "Error",
         description: "Terjadi kesalahan, silakan coba lagi",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAdminAuth = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const { error } = await signInAsAdmin(username, password);
-      if (error) {
-        toast({
-          title: "Error Login Admin",
-          description: error.message,
-          variant: "destructive"
-        });
-      } else {
-        toast({
-          title: "Login Admin Berhasil",
-          description: "Selamat datang, Administrator!"
-        });
-      }
-    } catch (error) {
-      console.error('Admin auth error:', error);
-      toast({
-        title: "Error",
-        description: "Terjadi kesalahan, silakan coba lagi",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
@@ -105,19 +87,22 @@ export const AuthForm = () => {
   };
 
   const resetForm = () => {
-    setEmail('');
-    setPassword('');
-    setFullName('');
-    setUsername('');
+    setEmail("");
+    setPassword("");
+    setFullName("");
+    setUsername("");
     setIsLogin(true);
   };
 
-  if (authMode === 'select') {
+  if (authMode === "select") {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center p-4">
         {/* Background Decorations */}
         <div className="fixed top-20 left-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="fixed bottom-20 right-10 w-40 h-40 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div
+          className="fixed bottom-20 right-10 w-40 h-40 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"
+          style={{ animationDelay: "2s" }}
+        ></div>
 
         <div className="w-full max-w-5xl">
           {/* Header */}
@@ -155,9 +140,9 @@ export const AuthForm = () => {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <Button 
+                <Button
                   onClick={() => {
-                    setAuthMode('user');
+                    setAuthMode("user");
                     resetForm();
                   }}
                   className="w-full h-16 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-200 text-lg font-semibold shadow-lg hover:shadow-xl"
@@ -165,69 +150,6 @@ export const AuthForm = () => {
                   <UserCheck className="h-6 w-6 mr-3" />
                   Masuk sebagai User
                 </Button>
-              </CardContent>
-            </Card>
-
-            {/* Admin Login Card - Direct Login */}
-            <Card className="group hover:shadow-2xl transition-all duration-300 border-yellow-200 bg-white/90 backdrop-blur-sm hover:scale-105">
-              <CardHeader className="text-center space-y-4 pb-6">
-                <div className="flex justify-center">
-                  <div className="bg-gradient-to-br from-yellow-500 to-yellow-600 p-4 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <Shield className="h-8 w-8 text-white" />
-                  </div>
-                </div>
-                <div>
-                  <CardTitle className="text-2xl font-bold text-yellow-800">
-                    Admin Login
-                  </CardTitle>
-                  <CardDescription className="text-yellow-600 mt-2">
-                    Kelola sistem dan data
-                  </CardDescription>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-4">
-                <form onSubmit={handleAdminAuth} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="admin-username" className="flex items-center gap-2 text-gray-700">
-                      <User className="h-4 w-4" />
-                      Username Admin
-                    </Label>
-                    <Input
-                      id="admin-username"
-                      type="text"
-                      placeholder="Username admin"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      required
-                      className="border-yellow-200 focus:border-yellow-500"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="admin-password" className="flex items-center gap-2 text-gray-700">
-                      <Lock className="h-4 w-4" />
-                      Password Admin
-                    </Label>
-                    <Input
-                      id="admin-password"
-                      type="password"
-                      placeholder="Password admin"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      className="border-yellow-200 focus:border-yellow-500"
-                    />
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-gradient-to-r from-yellow-600 to-yellow-700 hover:from-yellow-700 hover:to-yellow-800 transition-all duration-200 text-lg font-semibold shadow-lg hover:shadow-xl"
-                    disabled={loading}
-                  >
-                    <Shield className="h-6 w-6 mr-3" />
-                    {loading ? 'Memproses...' : 'Login Admin'}
-                  </Button>
-                </form>
               </CardContent>
             </Card>
           </div>
@@ -241,7 +163,10 @@ export const AuthForm = () => {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-100 flex items-center justify-center p-4">
       {/* Background Decorations */}
       <div className="fixed top-20 left-10 w-32 h-32 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-      <div className="fixed bottom-20 right-10 w-40 h-40 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse" style={{animationDelay: '2s'}}></div>
+      <div
+        className="fixed bottom-20 right-10 w-40 h-40 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"
+        style={{ animationDelay: "2s" }}
+      ></div>
 
       <Card className="w-full max-w-md shadow-2xl border border-purple-100 bg-white/80 backdrop-blur-sm">
         <CardHeader className="text-center space-y-4">
@@ -252,7 +177,7 @@ export const AuthForm = () => {
           </div>
           <div>
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-purple-900 bg-clip-text text-transparent">
-              {isLogin ? 'User Login' : 'Daftar Akun'}
+              {isLogin ? "User Login" : "Daftar Akun"}
             </CardTitle>
           </div>
         </CardHeader>
@@ -309,12 +234,12 @@ export const AuthForm = () => {
               />
             </div>
 
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transition-all duration-200"
               disabled={loading}
             >
-              {loading ? 'Memproses...' : (isLogin ? 'Masuk' : 'Daftar')}
+              {loading ? "Memproses..." : isLogin ? "Masuk" : "Daftar"}
             </Button>
 
             <div className="text-center space-y-2">
@@ -323,16 +248,15 @@ export const AuthForm = () => {
                 onClick={() => setIsLogin(!isLogin)}
                 className="text-sm text-purple-600 hover:text-purple-800 transition-colors"
               >
-                {isLogin 
-                  ? 'Belum punya akun? Daftar di sini' 
-                  : 'Sudah punya akun? Masuk di sini'
-                }
+                {isLogin
+                  ? "Belum punya akun? Daftar di sini"
+                  : "Sudah punya akun? Masuk di sini"}
               </button>
               <br />
               <button
                 type="button"
                 onClick={() => {
-                  setAuthMode('select');
+                  setAuthMode("select");
                   resetForm();
                 }}
                 className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
