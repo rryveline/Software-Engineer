@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -20,29 +19,33 @@ const Login = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [localLoading, setLocalLoading] = useState(false);
 
   const isAdmin = type === 'admin';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+    setLocalLoading(true);
     if (!formData.email || !formData.password) {
       toast({
         title: "Error",
         description: "Mohon isi email dan password",
         variant: "destructive"
       });
+      setLocalLoading(false);
       return;
     }
 
     const success = await login(formData.email, formData.password, type as 'user' | 'admin');
-    
+    setLocalLoading(false);
     if (success) {
       toast({
         title: "Login Berhasil",
         description: `Selamat datang, ${isAdmin ? 'Administrator' : 'User'}!`
       });
-      navigate(isAdmin ? '/admin' : '/chatbot');
+      setTimeout(() => {
+        navigate(isAdmin ? '/admin' : '/chatbot');
+      }, 100);
     } else {
       toast({
         title: "Login Gagal",
@@ -128,9 +131,9 @@ const Login = () => {
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700"
-                disabled={isLoading}
+                disabled={isLoading || localLoading}
               >
-                {isLoading ? 'Memproses...' : 'Login'}
+                {(isLoading || localLoading) ? 'Memproses...' : 'Login'}
               </Button>
             </form>
 
