@@ -31,6 +31,58 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { TablesInsert, Tables } from "@/integrations/supabase/types";
+import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
+
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
+
+function getFileExtension(filename) {
+  return filename.split('.').pop()?.toLowerCase() || '';
+}
+function isPDF(filename) {
+  return getFileExtension(filename) === 'pdf';
+}
+function isImage(filename) {
+  return ['png', 'jpg', 'jpeg', 'webp'].includes(getFileExtension(filename));
+}
+async function extractPdfText(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let text = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    text += content.items.map(item => item.str).join(' ') + '\n';
+  }
+  return text;
+}
+async function extractImageTextWithOpenAI(file) {
+  const arrayBuffer = await file.arrayBuffer();
+  const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+  const mime = file.type;
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      model: 'gpt-4-vision-preview',
+      messages: [
+        {
+          role: 'user',
+          content: [
+            { type: 'text', text: 'Extract all readable text from this image.' },
+            { type: 'image_url', image_url: { url: `data:${mime};base64,${base64}` } }
+          ]
+        }
+      ],
+      max_tokens: 1024
+    })
+  });
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content || '';
+}
 
 const DataManagement = () => {
   const { toast } = useToast();
@@ -45,6 +97,7 @@ const DataManagement = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [extracting, setExtracting] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -78,6 +131,24 @@ const DataManagement = () => {
     };
     fetchData();
   }, []);
+
+  // Tambahkan handler file input
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setFile(file || null);
+    if (!file) return;
+    setExtracting(true);
+    let extractedText = '';
+    if (isPDF(file.name)) {
+      extractedText = await extractPdfText(file);
+    } else if (isImage(file.name)) {
+      extractedText = await extractImageTextWithOpenAI(file);
+    } else {
+      extractedText = 'Ekstensi file tidak didukung untuk ekstraksi otomatis.';
+    }
+    setFormData((prev) => ({ ...prev, content: extractedText }));
+    setExtracting(false);
+  };
 
   // Add manual data
   const handleAddData = async () => {
@@ -300,7 +371,8 @@ const DataManagement = () => {
                     <Label htmlFor="add-content">Konten *</Label>
                     <Textarea
                       id="add-content"
-                      value={formData.content}
+                      value={extracting ? "Sedang mengekstrak file, mohon tunggu..." : formData.content}
+                      disabled={extracting}
                       onChange={(e) =>
                         setFormData({ ...formData, content: e.target.value })
                       }
@@ -317,8 +389,15 @@ const DataManagement = () => {
                       id="add-file"
                       type="file"
                       accept=".pdf,.png,.jpg,.jpeg"
-                      onChange={(e) => setFile(e.target.files?.[0] || null)}
+                      onChange={handleFileChange}
                     />
+                    {extracting && (
+                      <div style={{ color: '#888', marginTop: 8, display: 'flex', alignItems: 'center' }}>
+                        <span style={{ display: 'inline-block', marginRight: 8, animation: 'spin 1s linear infinite' }}>⏳</span>
+                        Mengekstrak file, mohon tunggu...
+                        <style>{`@keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+                      </div>
+                    )}
                     {file && (
                       <div className="text-xs text-gray-700 mt-2">
                         {file.type.startsWith("image/") ? (
@@ -361,6 +440,7 @@ const DataManagement = () => {
                     <Button
                       onClick={handleAddData}
                       className="bg-green-600 hover:bg-green-700"
+                      disabled={loading || extracting}
                     >
                       Simpan
                     </Button>

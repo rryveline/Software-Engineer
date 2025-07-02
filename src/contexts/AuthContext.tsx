@@ -89,6 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               lastLogin: new Date().toISOString(),
             };
             setUser(userWithRole);
+            setErrorMsg(null);
           } else {
             if (didTimeout) {
               setErrorMsg("Gagal mengambil data profile dari server (timeout).");
