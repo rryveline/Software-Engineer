@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,29 +30,35 @@ const AutoCrawling = ({ onCrawlComplete }: AutoCrawlingProps) => {
     setIsCrawling(true);
     setCrawlProgress(0);
 
-    // Simulate crawling progress
-    const interval = setInterval(() => {
-      setCrawlProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsCrawling(false);
-          
-          // Simulate saving crawled data
-          const title = `Data dari ${crawlUrl}`;
-          const content = `Konten yang berhasil di-crawl dari website ${crawlUrl}. Ini adalah contoh data yang dikumpulkan secara otomatis dari halaman web.`;
-          
-          onCrawlComplete(title, content, 'akademik', crawlUrl);
-          
-          toast({
-            title: "Crawling Selesai",
-            description: "Data berhasil diambil dan disimpan dari website UNKLAB"
-          });
-          
-          return 100;
-        }
-        return prev + 10;
+    try {
+      const res = await fetch("http://localhost:4000/start-crawling-demo", {
+        method: "POST",
       });
-    }, 300);
+      const data = await res.json();
+      toast({
+        title: "Crawling Demo",
+        description: data.message,
+        variant: "default",
+      });
+      // Tunggu beberapa detik agar backend selesai, lalu refresh data
+      setTimeout(() => {
+        setIsCrawling(false);
+        setCrawlProgress(100);
+        onCrawlComplete(
+          `Demo crawling selesai`,
+          `Crawling demo (5 halaman) telah selesai. Silakan cek data hasil crawling.`,
+          'demo',
+          crawlUrl
+        );
+      }, 3000);
+    } catch (err) {
+      setIsCrawling(false);
+      toast({
+        title: "Error",
+        description: "Gagal memulai crawling demo",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

@@ -1,9 +1,6 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY!);
 
 async function testModel() {
   try {

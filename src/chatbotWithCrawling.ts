@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// Hapus: import dotenv from 'dotenv';
+// Hapus: dotenv.config();
 
 import { callOpenAI } from './lib/openai.js';
 

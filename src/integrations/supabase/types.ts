@@ -46,6 +46,7 @@ export type Database = {
           updated_at: string
           url: string | null
           word_count: number | null
+          embedding: number[] | null
         }
         Insert: {
           category: string
@@ -59,6 +60,7 @@ export type Database = {
           updated_at?: string
           url?: string | null
           word_count?: number | null
+          embedding?: number[] | null
         }
         Update: {
           category?: string
@@ -72,6 +74,7 @@ export type Database = {
           updated_at?: string
           url?: string | null
           word_count?: number | null
+          embedding?: number[] | null
         }
         Relationships: []
       }
@@ -111,6 +114,20 @@ export type Database = {
     }
     CompositeTypes: {
       [_ in never]: never
+    }
+    match_crawled_data: {
+      Args: {
+        query_embedding: number[];
+        match_threshold: number;
+        match_count: number;
+      };
+      Returns: Array<{
+        id: string;
+        title: string;
+        content: string;
+        url: string | null;
+        similarity: number;
+      }>;
     }
   }
 }

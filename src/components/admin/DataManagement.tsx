@@ -32,6 +32,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { TablesInsert, Tables } from "@/integrations/supabase/types";
 import * as pdfjsLib from 'pdfjs-dist/build/pdf';
+import { getOpenAIEmbedding } from '@/lib/openai';
 pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.js';
 
 const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
@@ -57,8 +58,26 @@ async function extractPdfText(file) {
   return text;
 }
 async function extractImageTextWithOpenAI(file) {
-  const arrayBuffer = await file.arrayBuffer();
-  const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
+  // Batasi ukuran file maksimal 2MB
+  if (file.size > 2 * 1024 * 1024) {
+    throw new Error('Ukuran file gambar terlalu besar (maksimal 2MB)');
+  }
+  // Konversi file ke base64 dengan FileReader (lebih aman untuk file besar)
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // Hasil: data:<mime>;base64,xxxx
+      const result = reader.result;
+      if (typeof result === 'string') {
+        const base64Data = result.split(',')[1];
+        resolve(base64Data);
+      } else {
+        reject(new Error('Gagal membaca file gambar'));
+      }
+    };
+    reader.onerror = () => reject(new Error('Gagal membaca file gambar'));
+    reader.readAsDataURL(file);
+  });
   const mime = file.type;
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -67,7 +86,7 @@ async function extractImageTextWithOpenAI(file) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      model: 'gpt-4-vision-preview',
+      model: 'gpt-4o',
       messages: [
         {
           role: 'user',
@@ -81,6 +100,9 @@ async function extractImageTextWithOpenAI(file) {
     })
   });
   const data = await response.json();
+  if (data.error) {
+    throw new Error('Gagal ekstraksi gambar: ' + (data.error.message || 'Unknown error'));
+  }
   return data.choices?.[0]?.message?.content || '';
 }
 
@@ -189,6 +211,12 @@ const DataManagement = () => {
       fileUrl = supabase.storage.from("manual-uploads").getPublicUrl(filePath)
         .data.publicUrl;
     }
+    let embedding = null;
+    try {
+      embedding = await getOpenAIEmbedding(formData.content, import.meta.env.VITE_OPENAI_API_KEY);
+    } catch (e) {
+      console.error('Gagal generate embedding:', e);
+    }
     const newData: TablesInsert<"crawled_data"> = {
       title: formData.title,
       category: formData.category,
@@ -199,6 +227,7 @@ const DataManagement = () => {
       updated_at: new Date().toISOString(),
       source_type: "manual_input",
       status: "success",
+      embedding,
     };
     const { error, data } = await supabase
       .from("crawled_data")
@@ -305,6 +334,56 @@ const DataManagement = () => {
         return "bg-blue-100 text-blue-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  // Tambahkan fungsi seedDataUNKLAB
+  const seedDataUNKLAB = async () => {
+    setLoading(true);
+    const seed = [
+      {
+        title: 'Apa itu UNKLAB?',
+        category: 'profil',
+        content: 'Universitas Klabat (UNKLAB) adalah universitas swasta Advent di Airmadidi, Sulawesi Utara, Indonesia. Didirikan tahun 1965, UNKLAB menawarkan berbagai program studi dan dikenal dengan lingkungan kampus yang asri dan fasilitas lengkap.',
+        url: 'https://www.unklab.ac.id/',
+        created_by: user?.id || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        source_type: 'manual_input',
+        status: 'success',
+      },
+      {
+        title: 'Fasilitas UNKLAB',
+        category: 'fasilitas',
+        content: 'UNKLAB memiliki fasilitas seperti perpustakaan, laboratorium komputer, asrama, klinik, aula, dan lapangan olahraga.',
+        url: 'https://www.unklab.ac.id/fasilitas/',
+        created_by: user?.id || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        source_type: 'manual_input',
+        status: 'success',
+      },
+      {
+        title: 'Biaya Kuliah UNKLAB',
+        category: 'biaya',
+        content: 'Biaya kuliah di UNKLAB bervariasi tergantung program studi, rata-rata berkisar antara Rp35.000.000 hingga Rp52.000.000 untuk 4 tahun.',
+        url: 'https://www.unklab.ac.id/biaya-perkuliahan/',
+        created_by: user?.id || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        source_type: 'manual_input',
+        status: 'success',
+      }
+    ];
+    const { error } = await supabase.from('crawled_data').insert(seed);
+    setLoading(false);
+    if (error) {
+      toast({ title: 'Error', description: 'Gagal seed data UNKLAB', variant: 'destructive' });
+    } else {
+      toast({ title: 'Berhasil', description: 'Data UNKLAB berhasil ditambahkan' });
+      // Refresh data
+      const { data } = await supabase.from('crawled_data').select('*').order('created_at', { ascending: false }).limit(50);
+      setDataList(data || []);
     }
   };
 
@@ -627,6 +706,9 @@ const DataManagement = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Tambahkan tombol di UI (di bawah tombol tambah data manual): */}
+      <Button variant="outline" size="sm" onClick={seedDataUNKLAB} className="ml-2">Seed Data UNKLAB</Button>
     </div>
   );
 };

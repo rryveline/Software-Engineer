@@ -47,6 +47,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       console.log("Session user metadata:", session?.user?.user_metadata);
       setSession(session);
 
+      if (event === "TOKEN_REFRESHED") {
+        console.log("Token refreshed!", session);
+        setSession(session);
+      }
+
       if (session?.user) {
         // Get user profile from profiles table with timeout
         let timeoutId: NodeJS.Timeout | null = null;
@@ -55,7 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           timeoutId = setTimeout(() => {
             didTimeout = true;
             reject(new Error("Request to Supabase profiles timed out."));
-          }, 8000);
+          }, 15000);
         });
         try {
           let profile = null;
@@ -92,18 +97,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
             setErrorMsg(null);
           } else {
             if (didTimeout) {
-              setErrorMsg("Gagal mengambil data profile dari server (timeout).");
+              setErrorMsg("Gagal mengambil data profile dari server (timeout). Silakan cek koneksi atau refresh halaman.");
               console.error("Profile query timeout");
             } else {
-              setErrorMsg("Gagal mengambil data profile dari server.");
+              setErrorMsg("Gagal mengambil data profile dari server. Silakan cek koneksi atau refresh halaman.");
               console.error("Profile query error:", profileError);
             }
-            setUser(null);
           }
         } catch (err) {
           if (timeoutId) clearTimeout(timeoutId);
-          setErrorMsg("Gagal mengambil data profile dari server.");
-          setUser(null);
+          setErrorMsg("Gagal mengambil data profile dari server. Silakan cek koneksi atau refresh halaman.");
           console.error("Profile query exception:", err);
         }
       } else {

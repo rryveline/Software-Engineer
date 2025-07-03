@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,6 +5,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Send, Bot, User, Clock, DollarSign, MapPin, Calendar, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { createClient } from '@supabase/supabase-js';
 
 interface Message {
   id: string;
@@ -23,6 +23,12 @@ interface ProgramData {
   cost: number;
   description: string;
 }
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_ANON_KEY
+);
+const OPENAI_API_KEY = import.meta.env.VITE_OPENAI_API_KEY;
 
 export const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -97,6 +103,65 @@ export const ChatBot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Fungsi untuk mencari data relevan di Supabase
+  async function searchSupabase(query) {
+    // Simple search: cari di judul dan konten
+    const { data, error } = await supabase
+      .from('crawled_data')
+      .select('title, content, url')
+      .ilike('content', `%${query}%`)
+      .limit(3);
+    if (error) return [];
+    return data || [];
+  }
+
+  // Fungsi untuk tanya ke OpenAI dengan context data
+  async function getOpenAIAnswerFromInternet(userMessage: string) {
+    const prompt = `Pertanyaan user: ${userMessage}\n\nJawab dengan jelas, akurat, dan lengkap dalam bahasa Indonesia. Jangan sebutkan bahwa Anda AI atau dari internet.`;
+  
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: 'Kamu adalah asisten cerdas yang menjawab semua pertanyaan umum dalam bahasa Indonesia secara informatif dan sopan.' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 512
+      })
+    });
+  
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || 'Maaf, saya tidak dapat menemukan jawaban saat ini.';
+  }
+  
+
+  // Fungsi untuk mendapatkan keyword pencarian dari OpenAI (NLP)
+  async function getSearchKeywordsFromOpenAI(userMessage) {
+    const prompt = `Ambilkan 3 kata kunci pencarian (dalam bahasa Indonesia) yang paling relevan dari pertanyaan berikut, pisahkan dengan koma, tanpa penjelasan lain. Jika pertanyaan tidak jelas, kembalikan pertanyaan aslinya saja.\n\nPertanyaan: ${userMessage}\nKata kunci:`;
+    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: [
+          { role: 'system', content: 'Kamu adalah asisten yang membantu mencari kata kunci pencarian dari pertanyaan user.' },
+          { role: 'user', content: prompt }
+        ],
+        max_tokens: 32
+      })
+    });
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content || userMessage;
+  }
+
   // T03 - Basic NLP Logic
   const processMessage = (userMessage: string): Message => {
     const message = userMessage.toLowerCase();
@@ -139,7 +204,7 @@ export const ChatBot = () => {
                 programs.map(p => 
                   `**${p.name}**\n` +
                   `Fakultas: ${p.faculty}\n` +
-                  `Durasi: ${p.duration}\n` +
+                  `Durasi: ${p.duration}\n` +y
                   `${p.description}\n`
                 ).join('\n') +
                 `\nUntuk informasi biaya, tanyakan "biaya [nama program]"`;
@@ -202,34 +267,61 @@ export const ChatBot = () => {
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
-
-    // Add user message
+  
     const userMessage: Message = {
       id: Date.now().toString(),
       text: inputValue,
       sender: 'user',
       timestamp: new Date()
     };
-
+  
     setMessages(prev => [...prev, userMessage]);
     setInputValue('');
     setIsTyping(true);
-
-    // Simulate typing delay
-    setTimeout(() => {
-      const botResponse = processMessage(inputValue);
+  
+    try {
+      const searchKeywords = await getSearchKeywordsFromOpenAI(inputValue);
+      const relevantData = await searchSupabase(searchKeywords);
+  
+      let botResponse: Message;
+  
+      if (relevantData.length > 0) {
+        // Jika ada data relevan dari Supabase
+        const answer = await getOpenAIAnswer(inputValue, relevantData);
+        botResponse = {
+          id: Date.now().toString(),
+          text: answer,
+          sender: 'bot',
+          timestamp: new Date(),
+          suggestions: [],
+          data: null
+        };
+      } else {
+        // Jika tidak ada data → jawab dari "internet"
+        const internetAnswer = await getOpenAIAnswerFromInternet(inputValue);
+        botResponse = {
+          id: Date.now().toString(),
+          text: internetAnswer,
+          sender: 'bot',
+          timestamp: new Date(),
+          suggestions: [],
+          data: null
+        };
+      }
+  
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        text: 'Terjadi kesalahan saat memproses pesan. Silakan coba lagi nanti.',
+        sender: 'bot',
+        timestamp: new Date()
+      }]);
+    } finally {
       setIsTyping(false);
-      
-      // T12 - Log chat for admin review
-      console.log('Chat Log:', {
-        userQuery: inputValue,
-        botResponse: botResponse.text,
-        timestamp: new Date(),
-        responseData: botResponse.data
-      });
-    }, 1500);
+    }
   };
+  
 
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);

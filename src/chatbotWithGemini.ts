@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// Hapus: import dotenv from 'dotenv';
+// Hapus: dotenv.config();
 
 import { callGemini } from './lib/gemini.js';
 

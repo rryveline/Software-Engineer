@@ -1,7 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
+// Hapus: import dotenv from 'dotenv';
+// Hapus: dotenv.config();
 
-console.log('ENV OPENAI_API_KEY:', process.env.OPENAI_API_KEY);
+console.log('ENV OPENAI_API_KEY:', import.meta.env.VITE_OPENAI_API_KEY);
 
 import { callOpenAI } from './lib/openai.js';
 
